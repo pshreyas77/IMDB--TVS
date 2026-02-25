@@ -1,4 +1,7 @@
+streamlit>=1.28.0
 pandas==2.3.3
 plotly==6.5.2
 dash==4.0.0
 gunicorn==21.2.0
+openai>=1.12.0
+scikit-learn==1.7.2

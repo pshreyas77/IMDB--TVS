@@ -1,0 +1,251 @@
+Age,Rating,Type,Title,Start_Year,End_Year,Duration,Decade,Episodes,Votes,Rating_Tier,Popularity_Score,Is_Miniseries
+18,9.5,TV Series,Breaking Bad,,,,Unknown,62,2200000,Elite,9.565217391304348,False
+PG,9.5,TV Mini Series,Planet Earth II,2016.0,2016.0,0.0,2010s,6,159000,Elite,0.691304347826087,True
+PG,9.4,TV Mini Series,Planet Earth,2006.0,2006.0,0.0,2000s,11,221000,Elite,0.9608695652173913,True
+15,9.4,TV Mini Series,Band of Brothers,2001.0,2001.0,0.0,2000s,10,533000,Elite,2.3173913043478263,True
+15,9.3,TV Mini Series,Chernobyl,2019.0,2019.0,0.0,2010s,5,876000,Elite,3.808695652173913,True
+18,9.3,TV Series,The Wire,,,,Unknown,60,381000,Elite,1.6565217391304348,False
+PG,9.3,TV Series,Avatar: The Last Airbender,,,,Unknown,62,378000,Elite,1.6434782608695653,False
+U,9.3,TV Mini Series,Blue Planet II,2017.0,2017.0,0.0,2010s,7,47000,Elite,0.2043478260869565,True
+18,9.2,TV Series,The Sopranos,,,,Unknown,86,478000,Excellent,2.0782608695652174,False
+PG,9.2,TV Mini Series,Cosmos,2014.0,2014.0,0.0,2010s,13,130000,Excellent,0.5652173913043478,True
+U,9.3,TV Mini Series,Cosmos,1980.0,1980.0,0.0,1990s,13,45000,Elite,0.1956521739130435,True
+U,9.3,TV Series,Our Planet,,,,Unknown,12,52000,Elite,0.22608695652173913,False
+18,9.2,TV Series,Game of Thrones,,,,Unknown,74,2300000,Excellent,10.0,False
+15,9.2,TV Series,The World at War,,,,Unknown,26,30000,Excellent,0.13043478260869565,False
+U,9.4,TV Series,Bluey,,,,Unknown,194,30000,Elite,0.13043478260869565,False
+PG,9.1,TV Series,Fullmetal Alchemist: Brotherhood,,,,Unknown,68,200000,Excellent,0.8695652173913043,False
+15,9.1,TV Series,Rick and Morty,2013.0,2013.0,0.0,2010s,74,608000,Excellent,2.643478260869565,False
+E,9.1,TV Mini Series,Life,2009.0,2009.0,0.0,2000s,11,43000,Excellent,0.18695652173913044,True
+15,9.1,TV Mini Series,The Last Dance,2020.0,2020.0,0.0,2020s,10,154000,Excellent,0.6695652173913043,True
+12,9.1,TV Series,The Twilight Zone,,,,Unknown,156,94000,Excellent,0.408695652173913,False
+15,9.1,TV Series,Sherlock,,,,Unknown,15,1000000,Excellent,4.3478260869565215,False
+15,9.1,TV Mini Series,The Vietnam War,2017.0,2017.0,0.0,2010s,10,28000,Excellent,0.1217391304347826,True
+15,9.1,TV Series,Attack on Titan,,,,Unknown,98,525000,Excellent,2.282608695652174,False
+PG,9.0,TV Series,Batman: The Animated Series,,,,Unknown,85,118000,Excellent,0.5130434782608696,False
+PG,9.0,TV Series,The Office,,,,Unknown,188,721000,Excellent,3.134782608695652,False
+E,9.0,TV Mini Series,The Blue Planet,2001.0,2001.0,0.0,2000s,8,43000,Excellent,0.18695652173913044,True
+15,9.0,TV Series,Arcane,,,,Unknown,10,277000,Excellent,1.2043478260869565,False
+PG,9.0,TV Series,Better Call Saul,,,,Unknown,63,657000,Excellent,2.856521739130435,False
+15,9.2,TV Mini Series,Scam 1992: The Harshad Mehta Story,2020.0,2020.0,0.0,2020s,10,158000,Excellent,0.6869565217391305,True
+15,9.0,TV Series,Clarkson's Farm,,,,Unknown,25,62000,Excellent,0.26956521739130435,False
+PG,9.0,TV Mini Series,Human Planet,2011.0,2011.0,0.0,2010s,8,28000,Excellent,0.1217391304347826,True
+E,9.0,TV Mini Series,Frozen Planet,,,,Unknown,10,33000,Excellent,0.14347826086956522,True
+PG,8.9,TV Series,Firefly,,,,Unknown,14,283000,Great,1.2304347826086957,False
+PG,9.0,TV Series,Hunter x Hunter,,,,Unknown,148,138000,Excellent,0.6,False
+12,9.0,TV Series,Only Fools and Horses,,,,Unknown,64,57000,Excellent,0.24782608695652172,False
+TV-14,9.0,TV Mini Series,The Civil War,1990.0,1990.0,0.0,1990s,9,19000,Excellent,0.08260869565217391,True
+12,8.9,TV Series,Death Note,,,,Unknown,37,383000,Great,1.6652173913043478,False
+PG,8.9,TV Series,Seinfeld,,,,Unknown,173,354000,Great,1.5391304347826087,False
+15,8.9,TV Mini Series,The Beatles: Get Back,2021.0,2021.0,0.0,2020s,3,29000,Great,0.12608695652173912,True
+15,8.9,TV Mini Series,Dekalog,,,,Unknown,10,28000,Great,0.1217391304347826,True
+PG,8.9,TV Series,Gravity Falls,,,,Unknown,41,138000,Great,0.6,False
+18,8.9,TV Series,True Detective,,,,Unknown,31,662000,Great,2.878260869565217,False
+PG,8.9,TV Series,Cowboy Bebop,,,,Unknown,26,141000,Great,0.6130434782608696,False
+TV-MA,9.0,TV Series,Sahsiyet,,,,Unknown,22,48000,Excellent,0.20869565217391306,False
+15,8.9,TV Series,Fargo,,,,Unknown,51,425000,Great,1.8478260869565215,False
+Not Rated,8.9,TV Series,Nathan for You,,,,Unknown,32,39000,Great,0.16956521739130437,False
+Unknown,9.0,TV Series,As If,,,,Unknown,55,23000,Excellent,0.1,False
+15,9.0,TV Series,Taskmaster,,,,Unknown,171,20000,Excellent,0.08695652173913043,False
+TV-MA,9.0,TV Mini Series,Apocalypse: The Second World War,2009.0,2009.0,0.0,2000s,6,14000,Excellent,0.0608695652173913,True
+15,8.8,TV Mini Series,When They See Us,2019.0,2019.0,0.0,2010s,4,139000,Great,0.6043478260869565,True
+15,8.8,TV Series,Last Week Tonight with John Oliver,,,,Unknown,356,96000,Great,0.4173913043478261,False
+PG,8.9,TV Mini Series,Africa,2013.0,2013.0,0.0,2010s,7,17000,Great,0.07391304347826087,True
+PG,8.9,TV Series,Friends,,,,Unknown,234,1100000,Great,4.782608695652174,False
+15,8.8,TV Series,Succession,,,,Unknown,39,278000,Great,1.208695652173913,False
+TV-MA,9.1,TV Series,TVF Pitchers,,,,Unknown,10,73000,Excellent,0.3173913043478261,False
+15,8.8,TV Series,It's Always Sunny in Philadelphia,,,,Unknown,172,254000,Great,1.1043478260869566,False
+12,8.9,TV Series,The West Wing,,,,Unknown,155,86000,Great,0.3739130434782609,False
+PG,8.8,TV Series,Monty Python's Flying Circus,,,,Unknown,45,79000,Great,0.34347826086956523,False
+PG,8.8,TV Series,Curb Your Enthusiasm,,,,Unknown,120,149000,Great,0.6478260869565218,False
+TV-MA,8.8,TV Mini Series,Das Boot,1985.0,1985.0,0.0,1990s,3,34000,Great,0.14782608695652175,True
+PG,9.0,TV Series,One Piece,,,,Unknown,1122,242000,Excellent,1.0521739130434784,False
+TV-14,8.9,TV Series,X-Men '97,,,,Unknown,11,29000,Great,0.12608695652173912,False
+PG,8.8,TV Series,BoJack Horseman,,,,Unknown,77,191000,Great,0.8304347826086956,False
+PG,8.8,TV Series,Fawlty Towers,,,,Unknown,12,101000,Great,0.43913043478260866,False
+TV-14,8.9,TV Series,Frieren: Beyond Journey's End,,,,Unknown,28,19000,Great,0.08260869565217391,False
+TV-PG,9.1,TV Series,Leyla ile Mecnun,,,,Unknown,144,97000,Excellent,0.4217391304347826,False
+PG,8.8,TV Mini Series,Pride and Prejudice,1995.0,1995.0,0.0,1990s,6,93000,Great,0.4043478260869565,True
+15,8.8,TV Series,Freaks and Geeks,,,,Unknown,18,154000,Great,0.6695652173913043,False
+15,8.8,TV Series,Blackadder Goes Forth,1989.0,1989.0,0.0,1990s,6,57000,Great,0.24782608695652172,False
+PG,8.8,TV Series,Dragon Ball Z,,,,Unknown,277,149000,Great,0.6478260869565218,False
+PG,8.8,TV Series,Twin Peaks,,,,Unknown,30,217000,Great,0.9434782608695652,False
+15,8.8,TV Series,Narcos,,,,Unknown,30,474000,Great,2.0608695652173914,False
+15,8.8,TV Series,Chappelle's Show,,,,Unknown,33,72000,Great,0.3130434782608696,False
+PG,8.8,TV Series,Dragon Ball Z,,,,Unknown,291,89000,Great,0.3869565217391304,False
+15,9.0,TV Series,Panchayat,,,,Unknown,24,93000,Excellent,0.4043478260869565,False
+Unknown,9.1,TV Series,Gullak,,,,Unknown,20,23000,Excellent,0.1,False
+15,8.8,TV Mini Series,"I, Claudius",1976.0,1976.0,0.0,1990s,13,20000,Great,0.08695652173913043,True
+18,8.7,TV Series,Black Mirror,,,,Unknown,33,645000,Great,2.8043478260869565,False
+PG,8.7,TV Series,South Park,,,,Unknown,326,408000,Great,1.7739130434782608,False
+15,8.8,TV Series,Vinland Saga,,,,Unknown,48,75000,Great,0.32608695652173914,False
+15,8.8,TV Series,Ted Lasso,,,,Unknown,34,355000,Great,1.5434782608695652,False
+PG,8.8,TV Mini Series,Over the Garden Wall,2014.0,2014.0,0.0,2010s,10,71000,Great,0.30869565217391304,True
+12,9.0,TV Series,Kota Factory,,,,Unknown,15,81000,Excellent,0.3521739130434782,False
+Unknown,9.1,TV Series,Reply 1988,,,,Unknown,20,12000,Excellent,0.052173913043478265,False
+16,9.0,TV Series,Bleach: Thousand-Year Blood War,,,,Unknown,27,37000,Excellent,0.16086956521739132,False
+18,8.8,TV Series,Peaky Blinders,,,,Unknown,36,658000,Great,2.8608695652173917,False
+18,8.7,TV Series,Six Feet Under,,,,Unknown,63,151000,Great,0.6565217391304348,False
+18,8.7,TV Series,Rome,,,,Unknown,22,187000,Great,0.8130434782608696,False
+15,8.7,TV Series,Oz,,,,Unknown,56,107000,Great,0.4652173913043478,False
+12,8.8,TV Series,Steins;Gate,,,,Unknown,26,74000,Great,0.32173913043478264,False
+15,8.7,TV Series,The Last of Us,,,,Unknown,16,540000,Great,2.347826086956522,False
+15,8.7,TV Series,Dark,,,,Unknown,26,450000,Great,1.9565217391304348,False
+15,8.7,TV Series,Fleabag,,,,Unknown,12,205000,Great,0.8913043478260869,False
+18,8.7,TV Series,The Boys,,,,Unknown,33,670000,Great,2.913043478260869,False
+18,8.7,TV Series,Blue Eye Samurai,2023.0,2023.0,0.0,2020s,9,71000,Great,0.30869565217391304,False
+15,8.7,TV Series,The Shield,,,,Unknown,89,89000,Great,0.3869565217391304,False
+18,8.7,TV Series,Berserk,,,,Unknown,25,55000,Great,0.2391304347826087,False
+12,8.7,TV Series,Battlestar Galactica,,,,Unknown,74,177000,Great,0.7695652173913043,False
+12,8.7,TV Series,Downton Abbey,,,,Unknown,52,226000,Great,0.9826086956521739,False
+PG,8.7,TV Series,The Simpsons,,,,Unknown,768,438000,Great,1.9043478260869564,False
+15,8.7,TV Series,Severance,,,,Unknown,19,207000,Great,0.8999999999999999,False
+TV-MA,8.7,TV Series,ShÅgun,,,,Unknown,12,143000,Great,0.6217391304347826,False
+15,8.7,TV Series,House M.D.,,,,Unknown,176,520000,Great,2.260869565217391,False
+15,8.7,TV Series,Mad Men,,,,Unknown,92,262000,Great,1.1391304347826088,False
+PG,8.7,TV Series,Arrested Development,,,,Unknown,84,326000,Great,1.4173913043478261,False
+18,8.7,TV Series,Peep Show,,,,Unknown,54,67000,Great,0.29130434782608694,False
+15,8.7,TV Series,One Punch Man: Wanpanman,,,,Unknown,25,188000,Great,0.817391304347826,False
+PG,8.7,TV Series,Star Trek: The Next Generation,,,,Unknown,176,137000,Great,0.5956521739130435,False
+18,8.7,TV Series,Invincible,,,,Unknown,18,210000,Great,0.9130434782608696,False
+TV-14,8.9,TV Series,Mahabharat,,,,Unknown,94,23000,Great,0.1,False
+PG,8.7,TV Series,The Grand Tour,,,,Unknown,46,84000,Great,0.3652173913043478,False
+15,8.7,TV Series,The Adventures of Sherlock Holmes,,,,Unknown,13,24000,Great,0.10434782608695653,False
+15,8.7,TV Series,Stranger Things,,,,Unknown,42,1400000,Great,6.086956521739131,False
+PG,8.7,TV Series,Justice League Unlimited,,,,Unknown,39,21000,Great,0.09130434782608696,False
+15,8.7,TV Series,The Marvelous Mrs. Maisel,,,,Unknown,43,144000,Great,0.6260869565217392,False
+12,8.7,TV Series,Friday Night Lights,,,,Unknown,76,73000,Great,0.3173913043478261,False
+PG,8.7,TV Series,Naruto: Shippuden,,,,Unknown,501,173000,Great,0.7521739130434781,False
+TV-14,8.9,TV Series,Behzat Ã: An Ankara Detective Story,,,,Unknown,105,33000,Great,0.14347826086956522,False
+15,8.7,TV Series,Line of Duty,,,,Unknown,36,71000,Great,0.30869565217391304,False
+15,8.7,TV Mini Series,1883,,,,Unknown,10,118000,Great,0.5130434782608696,True
+PG,8.7,TV Series,Top Gear,,,,Unknown,328,128000,Great,0.5565217391304348,False
+15,8.7,TV Series,Monster,,,,Unknown,75,46000,Great,0.2,False
+TV-PG,8.9,TV Series,Sarabhai V/S Sarabhai,,,,Unknown,79,18000,Great,0.0782608695652174,False
+12,8.6,TV Series,The Mandalorian,,,,Unknown,25,593000,Good,2.5782608695652174,False
+18,8.7,TV Series,The Thick of It,,,,Unknown,24,26000,Great,0.11304347826086956,False
+15,8.7,TV Series,How to with John Wilson,,,,Unknown,18,14000,Great,0.0608695652173913,False
+Unknown,9.2,TV Series,Aspirants,,,,Unknown,10,312000,Excellent,1.356521739130435,False
+PG,8.7,TV Series,This Is Us,,,,Unknown,106,160000,Great,0.6956521739130435,False
+PG,8.7,TV Series,Father Ted,,,,Unknown,25,44000,Great,0.19130434782608696,False
+18,8.6,TV Series,House of Cards,,,,Unknown,73,533000,Good,2.3173913043478263,False
+15,8.6,TV Series,Atlanta,,,,Unknown,41,89000,Good,0.3869565217391304,False
+15,8.6,TV Series,Parks and Recreation,,,,Unknown,124,290000,Good,1.2608695652173911,False
+15,8.7,TV Series,Code Geass: Lelouch of the Rebellion,,,,Unknown,54,81000,Great,0.3521739130434782,False
+PG,8.6,TV Series,The Crown,,,,Unknown,60,259000,Good,1.126086956521739,False
+18,8.6,TV Series,Deadwood,,,,Unknown,36,118000,Good,0.5130434782608696,False
+PG,8.6,TV Series,The X Files,,,,Unknown,217,251000,Good,1.091304347826087,False
+18,8.6,TV Series,Dexter,,,,Unknown,96,775000,Good,3.369565217391304,False
+15,8.7,TV Series,Primal,,,,Unknown,21,21000,Great,0.09130434782608696,False
+TV-PG,8.6,TV Series,Adventure Time,,,,Unknown,289,114000,Good,0.49565217391304345,False
+15,8.6,TV Mini Series,It's a Sin,2021.0,2021.0,0.0,2020s,5,37000,Good,0.16086956521739132,True
+TV-14,9.0,TV Series,Ramayan,,,,Unknown,78,24000,Excellent,0.10434782608695653,False
+15,8.6,TV Series,The Bridge,,,,Unknown,38,77000,Good,0.33478260869565213,False
+18,8.6,TV Series,Daredevil,,,,Unknown,39,477000,Good,2.073913043478261,False
+PG,8.6,TV Series,Blackadder II,1986.0,1986.0,0.0,1990s,6,50000,Good,0.21739130434782608,False
+TV-14,8.7,TV Mini Series,Lonesome Dove,1989.0,1989.0,0.0,1990s,4,26000,Great,0.11304347826086956,True
+15,8.6,TV Series,The Jinx: The Life and Deaths of Robert Durst,,,,Unknown,12,53000,Good,0.23043478260869565,False
+18,8.6,TV Series,Mindhunter,,,,Unknown,19,340000,Good,1.4782608695652175,False
+PG,8.7,TV Series,Haikyuu!!,,,,Unknown,89,36000,Great,0.1565217391304348,False
+PG,8.6,TV Series,Poirot,,,,Unknown,70,53000,Good,0.23043478260869565,False
+18,8.6,TV Mini Series,The Offer,2022.0,2022.0,0.0,2020s,10,41000,Good,0.1782608695652174,True
+15,8.7,TV Series,The Return of Sherlock Holmes,,,,Unknown,13,13000,Great,0.05652173913043478,False
+U,8.6,TV Series,Mr. Bean,,,,Unknown,15,135000,Good,0.5869565217391305,False
+18,8.6,TV Series,Gomorrah,,,,Unknown,58,45000,Good,0.1956521739130435,False
+15,8.7,TV Series,Crash Landing on You,,,,Unknown,19,43000,Great,0.18695652173913044,False
+18,8.7,TV Series,Mr Inbetween,,,,Unknown,26,31000,Great,0.13478260869565217,False
+PG,9.1,TV Series,Critical Role,,,,Unknown,412,13000,Excellent,0.05652173913043478,False
+TV-MA,8.7,TV Mini Series,Scavengers Reign,2023.0,2023.0,0.0,2020s,12,18000,Great,0.0782608695652174,True
+G,8.6,TV Series,Pose,,,,Unknown,26,33000,Good,0.14347826086956522,False
+PG,8.6,TV Series,Mystery Science Theatre 3000,,,,Unknown,199,26000,Good,0.11304347826086956,False
+15,8.6,TV Series,Blackadder the Third,1987.0,1987.0,0.0,1990s,6,47000,Good,0.2043478260869565,False
+15,8.6,TV Series,Archer,,,,Unknown,144,167000,Good,0.7260869565217392,False
+PG,8.6,TV Series,Yes Minister,,,,Unknown,22,17000,Good,0.07391304347826087,False
+PG,8.6,TV Series,Anne,,,,Unknown,27,67000,Good,0.29130434782608694,False
+TV-14,9.0,TV Series,Yeh Meri Family,,,,Unknown,17,26000,Excellent,0.11304347826086956,False
+15,8.6,TV Series,Demon Slayer: Kimetsu no Yaiba,,,,Unknown,69,152000,Good,0.6608695652173913,False
+PG,8.6,TV Series,Young Justice,,,,Unknown,102,46000,Good,0.2,False
+15,8.7,TV Mini Series,Greatest Events of WWII in Colour,2019.0,2019.0,0.0,2010s,10,11000,Great,0.04782608695652174,True
+15,8.6,TV Mini Series,Dopesick,2021.0,2021.0,0.0,2020s,8,79000,Good,0.34347826086956523,True
+16,8.6,TV Series,The Bear,,,,Unknown,28,220000,Good,0.9565217391304348,False
+15,8.6,TV Series,The Newsroom,,,,Unknown,25,125000,Good,0.5434782608695652,False
+15,8.7,TV Series,Yellowstone,,,,Unknown,53,226000,Great,0.9826086956521739,False
+15,8.6,TV Series,QI,,,,Unknown,341,34000,Good,0.14782608695652175,False
+18,8.6,TV Series,Boardwalk Empire,,,,Unknown,56,204000,Good,0.8869565217391304,False
+PG,8.7,TV Series,El Chavo del Ocho,,,,Unknown,357,13000,Great,0.05652173913043478,False
+15,8.6,TV Series,Justified,,,,Unknown,78,120000,Good,0.5217391304347826,False
+15,8.7,TV Series,The Bureau,,,,Unknown,50,14000,Great,0.0608695652173913,False
+U,8.6,TV Series,The Bugs Bunny Show,,,,Unknown,78,36000,Good,0.1565217391304348,False
+15,8.7,TV Series,Homicide: Life on the Street,,,,Unknown,122,14000,Great,0.0608695652173913,False
+15,8.5,TV Mini Series,The Haunting of Hill House,2018.0,2018.0,0.0,2010s,10,291000,Good,1.2652173913043478,True
+16,8.6,TV Series,What We Do in the Shadows,,,,Unknown,51,104000,Good,0.45217391304347826,False
+PG,8.5,TV Series,Dragon Ball,,,,Unknown,153,67000,Good,0.29130434782608694,False
+PG,8.6,TV Series,Justice League,,,,Unknown,52,52000,Good,0.22608695652173913,False
+15,8.6,TV Series,The Venture Bros.,,,,Unknown,86,28000,Good,0.1217391304347826,False
+18,8.7,TV Series,The Family Man,,,,Unknown,20,99000,Great,0.43043478260869567,False
+12,8.5,TV Mini Series,Battlestar Galactica,2003.0,2003.0,0.0,2000s,2,81000,Good,0.3521739130434782,True
+15,8.6,TV Series,Jujutsu Kaisen,,,,Unknown,48,121000,Good,0.5260869565217392,False
+PG,8.5,TV Series,Dragon Ball,,,,Unknown,153,66000,Good,0.28695652173913044,False
+15,8.5,TV Mini Series,The Queen's Gambit,2020.0,2020.0,0.0,2020s,7,562000,Good,2.4434782608695653,True
+15,8.5,TV Series,Flight of the Conchords,,,,Unknown,22,66000,Good,0.28695652173913044,False
+15,8.5,TV Series,Making a Murderer,,,,Unknown,20,103000,Good,0.44782608695652176,False
+12,8.6,TV Series,Endeavour,,,,Unknown,36,34000,Good,0.14782608695652175,False
+PG,8.6,TV Series,"Yes, Prime Minister",,,,Unknown,16,13000,Good,0.05652173913043478,False
+15,8.6,TV Series,Coupling,,,,Unknown,28,48000,Good,0.20869565217391306,False
+15,8.5,TV Series,Samurai Champloo,,,,Unknown,26,56000,Good,0.2434782608695652,False
+Unknown,8.9,TV Series,Rocket Boys,,,,Unknown,17,18000,Great,0.0782608695652174,False
+PG,8.5,TV Series,The IT Crowd,,,,Unknown,26,165000,Good,0.7173913043478262,False
+15,8.6,TV Series,Impractical Jokers,,,,Unknown,285,46000,Good,0.2,False
+TV-MA,8.9,TV Series,Senke nad Balkanom,,,,Unknown,20,12000,Great,0.052173913043478265,False
+15,8.5,TV Series,Mr. Robot,,,,Unknown,45,421000,Good,1.8304347826086955,False
+TV-14,8.7,TV Series,Ezel,,,,Unknown,71,38000,Great,0.16521739130434782,False
+15,8.6,TV Series,The Eric Andre Show,,,,Unknown,69,22000,Good,0.09565217391304348,False
+15,8.5,TV Series,Spaced,,,,Unknown,14,58000,Good,0.25217391304347825,False
+15,8.6,TV Series,I'm Alan Partridge,,,,Unknown,12,22000,Good,0.09565217391304348,False
+PG,8.5,TV Series,Samurai Jack,,,,Unknown,62,60000,Good,0.2608695652173913,False
+TV-PG,8.6,TV Mini Series,Long Way Round,,,,Unknown,10,15000,Good,0.06521739130434782,True
+15,8.6,TV Series,Detectorists,,,,Unknown,20,22000,Good,0.09565217391304348,False
+15,8.6,TV Series,Mob Psycho 100,,,,Unknown,37,46000,Good,0.2,False
+15,8.5,TV Series,Happy Valley,,,,Unknown,18,65000,Good,0.2826086956521739,False
+15,8.5,TV Series,Louie,,,,Unknown,61,82000,Good,0.3565217391304348,False
+18,8.5,TV Series,Spartacus,,,,Unknown,33,258000,Good,1.1217391304347826,False
+12,8.5,TV Series,Whose Line Is It Anyway?,,,,Unknown,220,47000,Good,0.2043478260869565,False
+TV-PG,8.6,TV Series,Through the Wormhole,,,,Unknown,62,18000,Good,0.0782608695652174,False
+15,8.5,TV Series,The Office,,,,Unknown,14,124000,Good,0.5391304347826087,False
+18,8.6,TV Series,Sons of Anarchy,,,,Unknown,92,326000,Good,1.4173913043478261,False
+15,8.5,TV Series,Formula 1: Drive to Survive,,,,Unknown,60,52000,Good,0.22608695652173913,False
+PG,8.5,TV Series,Neon Genesis Evangelion,,,,Unknown,26,87000,Good,0.3782608695652174,False
+15,8.5,TV Series,Twin Peaks,2017.0,2017.0,0.0,2010s,18,77000,Good,0.33478260869565213,False
+12,8.6,TV Series,Heartstopper,,,,Unknown,24,78000,Good,0.33913043478260874,False
+15,8.5,TV Series,Trailer Park Boys,,,,Unknown,106,51000,Good,0.2217391304347826,False
+15,8.5,TV Series,Derry Girls,,,,Unknown,19,61000,Good,0.26521739130434785,False
+U,8.5,TV Series,Regular Show,,,,Unknown,244,59000,Good,0.2565217391304348,False
+18,8.5,TV Series,Shameless,,,,Unknown,134,289000,Good,1.2565217391304349,False
+Not Rated,8.6,TV Series,Skam,,,,Unknown,43,39000,Good,0.16956521739130437,False
+18,8.5,TV Mini Series,Spartacus: Gods of the Arena,2011.0,2011.0,0.0,2010s,6,146000,Good,0.6347826086956522,True
+18,8.6,TV Series,Brass Eye,,,,Unknown,7,12000,Good,0.052173913043478265,False
+PG,8.6,TV Series,North & South,2004.0,2004.0,0.0,2000s,4,35000,Good,0.15217391304347827,False
+15,8.5,TV Series,Schitt's Creek,,,,Unknown,80,148000,Good,0.6434782608695653,False
+15,8.5,TV Series,Silicon Valley,,,,Unknown,53,167000,Good,0.7260869565217392,False
+PG,8.5,TV Series,Futurama,,,,Unknown,180,262000,Good,1.1391304347826088,False
+PG,8.5,TV Series,Fullmetal Alchemist,,,,Unknown,51,78000,Good,0.33913043478260874,False
+18,8.6,TV Series,Letterkenny,,,,Unknown,81,30000,Good,0.13043478260869565,False
+PG,8.6,TV Series,Doctor Who,,,,Unknown,175,249000,Good,1.0826086956521739,False
+15,8.6,TV Mini Series,RurÃ´ni Kenshin: Meiji kenkaku romantan - Tsuioku-hen,1999.0,1999.0,0.0,1990s,4,16000,Good,0.06956521739130435,True
+15,8.5,TV Series,The Expanse,,,,Unknown,62,174000,Good,0.7565217391304347,False
+15,8.6,TV Series,Extraordinary Attorney Woo,2022.0,2022.0,0.0,2020s,16,27000,Good,0.11739130434782608,False
+18,8.5,TV Series,Hannibal,,,,Unknown,39,278000,Good,1.208695652173913,False
+PG,8.6,TV Mini Series,From the Earth to the Moon,1998.0,1998.0,0.0,1990s,12,13000,Good,0.05652173913043478,True
+15,8.6,TV Series,My Brilliant Friend,,,,Unknown,25,18000,Good,0.0782608695652174,False
+15,8.5,TV Series,The Rehearsal,,,,Unknown,7,26000,Good,0.11304347826086956,False
+18,8.6,TV Series,Wentworth Prison,,,,Unknown,100,25000,Good,0.10869565217391304,False
+Unknown,8.6,TV Series,Avrupa Yakasi,,,,Unknown,190,21000,Good,0.09130434782608696,False
+TV-MA,8.7,TV Series,Umbre,,,,Unknown,21,12000,Great,0.052173913043478265,False
+12,8.7,TV Series,Alchemy of Souls,,,,Unknown,30,18000,Great,0.0782608695652174,False
+TV-14,8.7,TV Series,Gintama,,,,Unknown,375,15000,Great,0.06521739130434782,False
+18,8.5,TV Series,Westworld,,,,Unknown,36,536000,Good,2.3304347826086955,False
+12,8.5,TV Series,Your Lie in April,,,,Unknown,24,39000,Good,0.16956521739130437,False
+12,8.5,TV Series,Community,,,,Unknown,110,295000,Good,1.282608695652174,False
+15,8.6,TV Mini Series,Tear Along the Dotted Line,2021.0,2021.0,0.0,2020s,6,15000,Good,0.06521739130434782,True
+15,8.5,TV Series,Chef's Table,,,,Unknown,30,17000,Good,0.07391304347826087,False
+Mature,9.4,TV Series,Sapne Vs Everyone,,,,Unknown,5,67000,Elite,0.29130434782608694,False

@@ -1,445 +1,566 @@
-# Import necessary libraries
+# ── IMPORTS ──
+import streamlit as st
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from dash import Dash, dcc, html, Input, Output, callback
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+from charts import (
+    create_top_rated_chart, create_top_voted_chart, 
+    create_rating_distribution, create_shows_per_decade, 
+    create_rating_vs_votes, create_type_comparison, 
+    create_age_distribution, create_avg_rating_decade, 
+    create_rating_tier, create_episodes_vs_rating
+)
+from ai_insights import generate_insights
 
-# Initialize the Dash app
-app = Dash(__name__)
-app.title = "HR Analytics Dashboard - Attrition Analysis"
+# ── RECOMMENDATION SYSTEM ──
+@st.cache_data
+def build_recommendation_model(df):
+    df_rec = df.copy()
+    df_rec = df_rec.fillna('')
+    df_rec['features'] = (
+        df_rec['Type'].astype(str) + ' ' + 
+        df_rec['Decade'].astype(str) + ' ' + 
+        df_rec['Age'].astype(str) + ' ' +
+        df_rec['Rating_Tier'].astype(str)
+    )
+    tfidf = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = tfidf.fit_transform(df_rec['features'])
+    cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
+    return cosine_sim, df_rec
 
-# Load the cleaned dataset from Phase 2
-df = pd.read_csv('hr_data_cleaned.csv')
+def get_recommendations(title, df, cosine_sim, df_rec, n=5):
+    if title not in df_rec['Title'].values:
+        return []
+    idx = df_rec[df_rec['Title'] == title].index[0]
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    sim_scores = [(i, score) for i, score in sim_scores if i != idx]
+    show_indices = [i[0] for i in sim_scores[:n]]
+    return df.iloc[show_indices][['Title','Rating','Votes','Type','Decade','Age']]
 
-# Define the color scheme matching the requirements
-COLORS = {
-    'background': '#F8F9FA',
-    'primary': '#2E5C8A',
-    'attrition_highlight': '#E07A5F',
-    'positive': '#81B29A',
-    'text': '#2C3E50'
+# ── SESSION STATE ──
+if 'insights' not in st.session_state:
+    st.session_state['insights'] = None
+
+# ── PAGE CONFIG ──
+st.set_page_config(
+    page_title="IMDB Top 250 TV Shows",
+    page_icon="▣",
+    layout="wide"
+)
+
+# ── CSS ──
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+html, body, [class*="css"] {
+    font-family: 'DM Sans', sans-serif !important;
+    background: #000 !important;
+    color: #E0E0E0 !important;
+}
+#MainMenu, footer, header { visibility: hidden; }
+
+.main .block-container {
+    padding-top: 0.5rem !important;
+    padding: 0.5rem 2rem !important;
+    max-width: 100% !important;
 }
 
-# Calculate KPIs for the cards
-total_employees = len(df)
-attrition_rate = round((df['Attrition_Num'].sum() / total_employees) * 100, 2)
-active_employees = total_employees - df['Attrition_Num'].sum()
-avg_tenure = round(df['YearsAtCompany'].mean(), 1)
+[data-testid="metric-container"] {
+    background: #0A0A0A !important;
+    border: 1px solid #1A1A1A !important;
+    border-top: 1px solid #333 !important;
+    border-radius: 4px !important;
+    padding: 1rem 1.2rem !important;
+}
+[data-testid="stMetricLabel"] {
+    font-family: 'DM Mono', monospace !important;
+    font-size: 0.6rem !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+    color: #333 !important;
+}
+[data-testid="stMetricValue"] {
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 2.2rem !important;
+    color: #E8E8E8 !important;
+}
+[data-testid="stMetricDelta"] {
+    display: none !important;
+}
 
-# Define the app layout
-app.layout = html.Div([
-    # 1. Header Section
-    html.Div([
-        html.H1("HR Analytics Dashboard", 
-                style={'textAlign': 'center', 
-                       'color': COLORS['text'], 
-                       'fontFamily': 'Arial, sans-serif',
-                       'fontSize': '36px',
-                       'marginBottom': '5px',
-                       'fontWeight': 'bold'}),
-        html.H3("Attrition Analysis", 
-                style={'textAlign': 'center', 
-                       'color': COLORS['primary'], 
-                       'fontFamily': 'Arial, sans-serif',
-                       'fontSize': '20px',
-                       'marginTop': '0px',
-                       'fontWeight': 'normal'})
-    ], style={'backgroundColor': 'white', 
-              'padding': '30px', 
-              'borderRadius': '10px', 
-              'margin': '20px',
-              'boxShadow': '0 4px 6px rgba(0,0,0,0.1)'}),
-    
-    # 2. KPI Cards Row
-    html.Div([
-        # Total Employees Card
-        html.Div([
-            html.H2(f"{total_employees:,}", 
-                    style={'color': COLORS['primary'], 
-                           'fontSize': '36px',
-                           'margin': '10px 0',
-                           'fontWeight': 'bold'}),
-            html.P("Total Employees", 
-                   style={'color': COLORS['text'],
-                          'fontSize': '16px',
-                          'margin': '5px 0'})
-        ], style={'display': 'inline-block', 
-                  'width': '24%', 
-                  'textAlign': 'center', 
-                  'backgroundColor': 'white', 
-                  'padding': '30px 20px', 
-                  'borderRadius': '10px', 
-                  'margin': '0 0.5%',
-                  'boxShadow': '0 4px 6px rgba(0,0,0,0.1)',
-                  'verticalAlign': 'top'}),
-        
-        # Attrition Rate Card
-        html.Div([
-            html.H2(f"{attrition_rate}%", 
-                    style={'color': COLORS['attrition_highlight'], 
-                           'fontSize': '36px',
-                           'margin': '10px 0',
-                           'fontWeight': 'bold'}),
-            html.P("Attrition Rate (%)", 
-                   style={'color': COLORS['text'],
-                          'fontSize': '16px',
-                          'margin': '5px 0'})
-        ], style={'display': 'inline-block', 
-                  'width': '24%', 
-                  'textAlign': 'center', 
-                  'backgroundColor': 'white', 
-                  'padding': '30px 20px', 
-                  'borderRadius': '10px', 
-                  'margin': '0 0.5%',
-                  'boxShadow': '0 4px 6px rgba(0,0,0,0.1)',
-                  'verticalAlign': 'top'}),
-        
-        # Active Employees Card
-        html.Div([
-            html.H2(f"{active_employees:,}", 
-                    style={'color': COLORS['positive'], 
-                           'fontSize': '36px',
-                           'margin': '10px 0',
-                           'fontWeight': 'bold'}),
-            html.P("Active Employees", 
-                   style={'color': COLORS['text'],
-                          'fontSize': '16px',
-                          'margin': '5px 0'})
-        ], style={'display': 'inline-block', 
-                  'width': '24%', 
-                  'textAlign': 'center', 
-                  'backgroundColor': 'white', 
-                  'padding': '30px 20px', 
-                  'borderRadius': '10px', 
-                  'margin': '0 0.5%',
-                  'boxShadow': '0 4px 6px rgba(0,0,0,0.1)',
-                  'verticalAlign': 'top'}),
-        
-        # Average Tenure Card
-        html.Div([
-            html.H2(f"{avg_tenure}", 
-                    style={'color': COLORS['primary'], 
-                           'fontSize': '36px',
-                           'margin': '10px 0',
-                           'fontWeight': 'bold'}),
-            html.P("Average Tenure (Years)", 
-                   style={'color': COLORS['text'],
-                          'fontSize': '16px',
-                          'margin': '5px 0'})
-        ], style={'display': 'inline-block', 
-                  'width': '24%', 
-                  'textAlign': 'center', 
-                  'backgroundColor': 'white', 
-                  'padding': '30px 20px', 
-                  'borderRadius': '10px', 
-                  'margin': '0 0.5%',
-                  'boxShadow': '0 4px 6px rgba(0,0,0,0.1)',
-                  'verticalAlign': 'top'})
-    ], style={'margin': '20px', 'textAlign': 'center'}),
-    
-    # 3. Filters Section
-    html.Div([
-        html.H3("Filters", style={'color': COLORS['text'], 'marginBottom': '15px'}),
-        
-        # Department Filter
-        html.Div([
-            html.Label("Department:", 
-                       style={'fontWeight': 'bold', 
-                              'fontFamily': 'Arial, sans-serif',
-                              'marginRight': '10px'}),
-            dcc.Dropdown(
-                id='dept-filter',
-                options=[{'label': 'All Departments', 'value': 'All'}] + 
-                        [{'label': dept, 'value': dept} for dept in sorted(df['Department'].unique())],
-                value='All',
-                clearable=False,
-                style={'width': '300px', 'display': 'inline-block'}
-            )
-        ], style={'display': 'inline-block', 'marginRight': '30px'}),
-        
-        # Gender Filter
-        html.Div([
-            html.Label("Gender:", 
-                       style={'fontWeight': 'bold', 
-                              'fontFamily': 'Arial, sans-serif',
-                              'marginRight': '10px'}),
-            dcc.Dropdown(
-                id='gender-filter',
-                options=[{'label': 'All Genders', 'value': 'All'}] + 
-                        [{'label': gender, 'value': gender} for gender in sorted(df['Gender'].unique())],
-                value='All',
-                clearable=False,
-                style={'width': '200px', 'display': 'inline-block'}
-            )
-        ], style={'display': 'inline-block', 'marginRight': '30px'}),
-        
-        # Age Group Filter
-        html.Div([
-            html.Label("Age Group:", 
-                       style={'fontWeight': 'bold', 
-                              'fontFamily': 'Arial, sans-serif',
-                              'marginRight': '10px'}),
-            dcc.Dropdown(
-                id='age-filter',
-                options=[{'label': 'All Age Groups', 'value': 'All'}] + 
-                        [{'label': age_group, 'value': age_group} for age_group in sorted(df['AgeGroup'].unique())],
-                value='All',
-                clearable=False,
-                style={'width': '200px', 'display': 'inline-block'}
-            )
-        ], style={'display': 'inline-block'})
-    ], style={'backgroundColor': 'white', 
-              'padding': '25px', 
-              'borderRadius': '10px', 
-              'margin': '20px',
-              'boxShadow': '0 4px 6px rgba(0,0,0,0.1)'}),
-    
-    # 4. Charts Section
-    # First row - 2 charts
-    html.Div([
-        # Bar Chart: Attrition by Department
-        html.Div([
-            html.H3("Attrition Rate by Department", 
-                    style={'textAlign': 'center', 
-                           'color': COLORS['text'],
-                           'fontFamily': 'Arial, sans-serif'}),
-            dcc.Graph(id='dept-chart')
-        ], style={'display': 'inline-block', 
-                  'width': '48%', 
-                  'backgroundColor': 'white', 
-                  'padding': '25px', 
-                  'borderRadius': '10px', 
-                  'margin': '20px 1%',
-                  'boxShadow': '0 4px 6px rgba(0,0,0,0.1)'}),
-        
-        # Column Chart: Attrition by Age Group
-        html.Div([
-            html.H3("Attrition Rate by Age Group", 
-                    style={'textAlign': 'center', 
-                           'color': COLORS['text'],
-                           'fontFamily': 'Arial, sans-serif'}),
-            dcc.Graph(id='age-chart')
-        ], style={'display': 'inline-block', 
-                  'width': '48%', 
-                  'backgroundColor': 'white', 
-                  'padding': '25px', 
-                  'borderRadius': '10px', 
-                  'margin': '20px 1%',
-                  'boxShadow': '0 4px 6px rgba(0,0,0,0.1)'})
-    ], style={'textAlign': 'center'}),
-    
-    # Second row - 2 charts
-    html.Div([
-        # Donut Chart: Attrition by Gender
-        html.Div([
-            html.H3("Employee Distribution by Gender", 
-                    style={'textAlign': 'center', 
-                           'color': COLORS['text'],
-                           'fontFamily': 'Arial, sans-serif'}),
-            dcc.Graph(id='gender-chart')
-        ], style={'display': 'inline-block', 
-                  'width': '48%', 
-                  'backgroundColor': 'white', 
-                  'padding': '25px', 
-                  'borderRadius': '10px', 
-                  'margin': '20px 1%',
-                  'boxShadow': '0 4px 6px rgba(0,0,0,0.1)'}),
-        
-        # Bar Chart: Attrition by Salary Slab
-        html.Div([
-            html.H3("Attrition Rate by Salary Slab", 
-                    style={'textAlign': 'center', 
-                           'color': COLORS['text'],
-                           'fontFamily': 'Arial, sans-serif'}),
-            dcc.Graph(id='salary-chart')
-        ], style={'display': 'inline-block', 
-                  'width': '48%', 
-                  'backgroundColor': 'white', 
-                  'padding': '25px', 
-                  'borderRadius': '10px', 
-                  'margin': '20px 1%',
-                  'boxShadow': '0 4px 6px rgba(0,0,0,0.1)'})
-    ], style={'textAlign': 'center'}),
-    
-    # Third row - Horizontal Bar Chart: Attrition by Job Role
-    html.Div([
-        html.H3("Attrition Rate by Job Role", 
-                style={'textAlign': 'center', 
-                       'color': COLORS['text'],
-                       'fontFamily': 'Arial, sans-serif'}),
-        dcc.Graph(id='jobrole-chart')
-    ], style={'backgroundColor': 'white', 
-              'padding': '25px', 
-              'borderRadius': '10px', 
-              'margin': '20px',
-              'boxShadow': '0 4px 6px rgba(0,0,0,0.1)'})
-], style={'backgroundColor': COLORS['background'], 
-          'padding': '20px', 
-          'fontFamily': 'Arial, sans-serif',
-          'minHeight': '100vh'})
+[data-testid="stSidebar"] {
+    background: #050505 !important;
+    border-right: 1px solid #141414 !important;
+}
+[data-testid="stSidebar"] label {
+    font-family: 'DM Mono', monospace !important;
+    font-size: 0.6rem !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    color: #333 !important;
+}
 
-# Callback to update all charts based on filter selections
-@callback(
-    [Output('dept-chart', 'figure'),
-     Output('age-chart', 'figure'),
-     Output('gender-chart', 'figure'),
-     Output('salary-chart', 'figure'),
-     Output('jobrole-chart', 'figure')],
-    [Input('dept-filter', 'value'),
-     Input('gender-filter', 'value'),
-     Input('age-filter', 'value')]
-)
-def update_charts(dept_value, gender_value, age_value):
-    """
-    This function filters the data based on user selections and updates all charts.
-    It's called automatically whenever any filter changes.
-    """
-    # Start with full dataset and filter based on selections
-    filtered_df = df.copy()
-    
-    # Apply department filter if not "All"
-    if dept_value != 'All':
-        filtered_df = filtered_df[filtered_df['Department'] == dept_value]
-    
-    # Apply gender filter if not "All"
-    if gender_value != 'All':
-        filtered_df = filtered_df[filtered_df['Gender'] == gender_value]
-    
-    # Apply age group filter if not "All"
-    if age_value != 'All':
-        filtered_df = filtered_df[filtered_df['AgeGroup'] == age_value]
-    
-    # If no data after filtering, return empty charts with message
-    if filtered_df.empty:
-        empty_fig = px.bar(title="No data available for selected filters")
-        return empty_fig, empty_fig, empty_fig, empty_fig, empty_fig
-    
-    # Create Department Chart (Bar Chart)
-    dept_stats = filtered_df.groupby('Department').agg({
-        'Attrition_Num': ['count', 'sum']
-    }).round(2)
-    dept_stats.columns = ['Total_Employees', 'Attrition_Count']
-    dept_stats['Attrition_Rate_%'] = round((dept_stats['Attrition_Count'] / dept_stats['Total_Employees']) * 100, 2)
-    dept_stats = dept_stats.reset_index()
-    
-    dept_fig = px.bar(dept_stats, 
-                      x='Department', 
-                      y='Attrition_Rate_%',
-                      title="Attrition Rate by Department",
-                      color='Attrition_Rate_%',
-                      color_continuous_scale=[[0, COLORS['positive']], 
-                                               [0.5, COLORS['primary']], 
-                                               [1, COLORS['attrition_highlight']]],
-                      labels={'Attrition_Rate_%': 'Attrition Rate (%)'})
-    dept_fig.update_layout(
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font_family="Arial, sans-serif",
-        title_font_size=16
-    )
-    
-    # Create Age Group Chart (Column Chart)
-    age_stats = filtered_df.groupby('AgeGroup').agg({
-        'Attrition_Num': ['count', 'sum']
-    }).round(2)
-    age_stats.columns = ['Total_Employees', 'Attrition_Count']
-    age_stats['Attrition_Rate_%'] = round((age_stats['Attrition_Count'] / age_stats['Total_Employees']) * 100, 2)
-    age_stats = age_stats.reset_index()
-    
-    age_fig = px.bar(age_stats, 
-                     x='AgeGroup', 
-                     y='Attrition_Rate_%',
-                     title="Attrition Rate by Age Group",
-                     color='Attrition_Rate_%',
-                     color_continuous_scale=[[0, COLORS['positive']], 
-                                              [0.5, COLORS['primary']], 
-                                              [1, COLORS['attrition_highlight']]],
-                     labels={'Attrition_Rate_%': 'Attrition Rate (%)'})
-    age_fig.update_layout(
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font_family="Arial, sans-serif",
-        title_font_size=16
-    )
-    
-    # Create Gender Chart (Donut Chart)
-    gender_stats = filtered_df.groupby('Gender').agg({
-        'Attrition_Num': ['count', 'sum']
-    }).round(2)
-    gender_stats.columns = ['Total_Employees', 'Attrition_Count']
-    gender_stats = gender_stats.reset_index()
-    
-    gender_fig = px.pie(gender_stats, 
-                        values='Total_Employees', 
-                        names='Gender',
-                        title="Employee Distribution by Gender",
-                        hole=0.4,
-                        color_discrete_map={'Male': COLORS['primary'], 
-                                           'Female': COLORS['attrition_highlight']})
-    gender_fig.update_layout(
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font_family="Arial, sans-serif",
-        title_font_size=16
-    )
-    
-    # Create Salary Slab Chart (Bar Chart)
-    salary_stats = filtered_df.groupby('SalarySlab').agg({
-        'Attrition_Num': ['count', 'sum']
-    }).round(2)
-    salary_stats.columns = ['Total_Employees', 'Attrition_Count']
-    salary_stats['Attrition_Rate_%'] = round((salary_stats['Attrition_Count'] / salary_stats['Total_Employees']) * 100, 2)
-    salary_stats = salary_stats.reset_index()
-    
-    salary_fig = px.bar(salary_stats, 
-                        x='SalarySlab', 
-                        y='Attrition_Rate_%',
-                        title="Attrition Rate by Salary Slab",
-                        color='Attrition_Rate_%',
-                        color_continuous_scale=[[0, COLORS['positive']], 
-                                                 [0.5, COLORS['primary']], 
-                                                 [1, COLORS['attrition_highlight']]],
-                        labels={'Attrition_Rate_%': 'Attrition Rate (%)'})
-    salary_fig.update_layout(
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font_family="Arial, sans-serif",
-        title_font_size=16
-    )
-    
-    # Create Job Role Chart (Horizontal Bar Chart)
-    jobrole_stats = filtered_df.groupby('JobRole').agg({
-        'Attrition_Num': ['count', 'sum']
-    }).round(2)
-    jobrole_stats.columns = ['Total_Employees', 'Attrition_Count']
-    jobrole_stats['Attrition_Rate_%'] = round((jobrole_stats['Attrition_Count'] / jobrole_stats['Total_Employees']) * 100, 2)
-    jobrole_stats = jobrole_stats.reset_index()
-    
-    jobrole_fig = px.bar(jobrole_stats, 
-                         y='JobRole', 
-                         x='Attrition_Rate_%',
-                         title="Attrition Rate by Job Role",
-                         color='Attrition_Rate_%',
-                         orientation='h',
-                         color_continuous_scale=[[0, COLORS['positive']], 
-                                                  [0.5, COLORS['primary']], 
-                                                  [1, COLORS['attrition_highlight']]],
-                         labels={'Attrition_Rate_%': 'Attrition Rate (%)'})
-    jobrole_fig.update_layout(
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font_family="Arial, sans-serif",
-        title_font_size=16,
-        height=max(400, len(jobrole_stats) * 30)  # Dynamic height based on number of roles
-    )
-    
-    return dept_fig, age_fig, gender_fig, salary_fig, jobrole_fig
+[data-baseweb="tab-list"] {
+    background: transparent !important;
+    border-bottom: 1px solid #1A1A1A !important;
+    gap: 0 !important;
+}
+[data-baseweb="tab"] {
+    font-family: 'DM Mono', monospace !important;
+    font-size: 0.6rem !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    color: #333 !important;
+    background: transparent !important;
+    border-bottom: 1px solid transparent !important;
+    padding: 0.6rem 1.2rem !important;
+}
+[aria-selected="true"] {
+    color: #E0E0E0 !important;
+    border-bottom: 1px solid #E0E0E0 !important;
+}
 
-# Run the app
-if __name__ == '__main__':
-    print("=" * 60)
-    print("Starting HR Analytics Dashboard...")
-    print("Dashboard will be available at: http://127.0.0.1:8050")
-    print("Press CTRL+C to stop the server")
-    print("=" * 60)
-    app.run(debug=True, port=8050)
+.stTextInput > div > div > input {
+    background: #0A0A0A !important;
+    border: 1px solid #1A1A1A !important;
+    border-radius: 3px !important;
+    color: #CCC !important;
+    font-family: 'DM Mono', monospace !important;
+    font-size: 0.82rem !important;
+}
+.stTextInput > div > div > input:focus {
+    border-color: #444 !important;
+    box-shadow: none !important;
+}
+
+[data-testid="stDataFrame"] {
+    border: 1px solid #141414 !important;
+    border-radius: 4px !important;
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #1A1A1A; }
+::-webkit-scrollbar-thumb:hover { background: #333; }
+
+.modebar { display: none !important; }
+
+.stButton > button,
+.stDownloadButton > button {
+    background: #1A1A1A !important;
+    border: 1px solid #444444 !important;
+    color: #FFFFFF !important;
+    font-family: 'DM Mono', monospace !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    border-radius: 4px !important;
+    padding: 0.5rem 1.2rem !important;
+    transition: all 0.15s !important;
+}
+.stButton > button:hover,
+.stDownloadButton > button:hover {
+    background: #2A2A2A !important;
+    border-color: #666666 !important;
+    color: #FFFFFF !important;
+}
+.stButton > button:active,
+.stDownloadButton > button:active {
+    background: #333333 !important;
+    border-color: #888888 !important;
+    color: #FFFFFF !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ── LOAD DATA ──
+@st.cache_data
+def load_data():
+    return pd.read_csv(
+        '/home/sunny77/IMDB_cleaned.csv', 
+        encoding='latin-1'
+    )
+
+df = load_data()
+
+# ── SIDEBAR ──
+with st.sidebar:
+    st.markdown("""
+    <div style="font-family:'Bebas Neue',sans-serif;
+         font-size:1rem;letter-spacing:0.2em;
+         color:#222;padding:1rem 0 0.8rem;
+         border-bottom:1px solid #141414;
+         margin-bottom:1rem;">
+         FILTERS
+    </div>
+    """, unsafe_allow_html=True)
+    
+    type_filter = st.selectbox(
+        "Show Type",
+        ["All", "TV Series", "TV Mini Series"]
+    )
+    decade_filter = st.selectbox(
+        "Decade",
+        ["All", "1990s", "2000s", "2010s", "2020s"]
+    )
+    age_filter = st.selectbox(
+        "Age Rating",
+        ["All"] + sorted(df['Age'].dropna().unique().tolist())
+    )
+    min_rating = st.slider(
+        "Min Rating", 8.5, 9.5, 8.5, 0.1,
+        format="%.1f"
+    )
+    min_votes = st.slider(
+        "Min Votes", 0, int(df['Votes'].max()),
+        0, 10000
+    )
+
+# ── FILTER DATA ──
+df_f = df.copy()
+if type_filter != "All":
+    df_f = df_f[df_f['Type'] == type_filter]
+if decade_filter != "All":
+    df_f = df_f[df_f['Decade'] == decade_filter]
+if age_filter != "All":
+    df_f = df_f[df_f['Age'] == age_filter]
+df_f = df_f[df_f['Rating'] >= min_rating]
+df_f = df_f[df_f['Votes'] >= min_votes]
+
+# ── EMPTY STATE ──
+if len(df_f) == 0:
+    st.markdown("""
+    <div style="padding:3rem;text-align:center;background:#0A0A0A;
+         border:1px solid #1A1A1A;border-radius:4px;margin:2rem 0;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:#333;">
+          NO SHOWS FOUND
+      </div>
+      <p style="font-family:'DM Mono',monospace;font-size:0.7rem;color:#444;margin-top:1rem;">
+          No shows match your filters. Try adjusting the criteria.
+      </p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.stop()
+
+# ── HEADER ──
+st.markdown("""
+<div style="padding:1rem 0 0.5rem;
+     border-bottom:1px solid #1A1A1A;
+     margin-bottom:1rem;
+     display:flex;
+     align-items:center;
+     justify-content:space-between;">
+  <div>
+    <div style="font-family:'DM Mono',monospace;
+         font-size:0.52rem;letter-spacing:0.2em;
+         text-transform:uppercase;color:#2A2A2A;
+         margin-bottom:0.2rem;">
+         IMDB · TV Intelligence
+    </div>
+    <div style="font-family:'Bebas Neue',sans-serif;
+         font-size:1.6rem;letter-spacing:0.12em;
+         color:#FFF;line-height:1;">
+         Top 250 TV Shows
+    </div>
+  </div>
+  <div style="font-family:'DM Mono',monospace;
+       font-size:0.55rem;color:#222;
+       letter-spacing:0.1em;text-align:right;">
+       250 SHOWS · IMDB DATA
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ── EXPORT BUTTON ──
+_, _, _, _, _, export_col = st.columns([1,1,1,1,1,1])
+with export_col:
+    csv_data = df_f.to_csv(index=False)
+    st.download_button(
+        "↓ Export CSV",
+        data=csv_data,
+        file_name="imdb_top250_filtered.csv",
+        mime="text/csv",
+        key="export_btn",
+        use_container_width=True
+    )
+
+# ── FILTER FEEDBACK ──
+st.markdown(f"""
+<div style="font-family:'DM Mono',monospace;
+     font-size:0.58rem;color:#2A2A2A;
+     letter-spacing:0.08em;padding:0.5rem 0 1rem;
+     border-bottom:1px solid #0F0F0F;">
+  Showing {len(df_f)} of 250 shows
+  <span style="margin:0 1rem;color:#141414">·</span>
+  Avg Rating {df_f['Rating'].mean():.2f}
+  <span style="margin:0 1rem;color:#141414">·</span>
+  {df_f['Votes'].sum()/1e6:.1f}M total votes
+</div>
+""", unsafe_allow_html=True)
+
+# ── KPI CARDS ──
+k1, k2, k3, k4 = st.columns(4)
+with k1:
+    st.metric("Total Shows", f"{len(df_f):,}")
+with k2:
+    avg = df_f['Rating'].mean()
+    st.metric("Avg Rating", 
+              f"{avg:.2f}" if len(df_f) > 0 else "N/A")
+with k3:
+    st.metric("Total Votes", 
+              f"{df_f['Votes'].sum()/1e6:.1f}M")
+with k4:
+    st.metric("Avg Episodes",
+              f"{int(df_f['Episodes'].mean())}"
+              if len(df_f) > 0 else "N/A")
+
+st.markdown("<div style='margin:1rem 0'></div>",
+            unsafe_allow_html=True)
+
+# ── SUMMARY STATS ──
+best_decade = df_f[
+    df_f['Decade'].notna() &
+    (df_f['Decade'] != 'Unknown')
+]['Decade'].value_counts().index[0] \
+if len(df_f) > 0 else "N/A"
+
+top_show = df_f.nlargest(1,'Rating').iloc[0] \
+if len(df_f) > 0 else None
+
+top_voted = df_f.nlargest(1,'Votes').iloc[0] \
+if len(df_f) > 0 else None
+
+common_age = df_f['Age'].value_counts().index[0] \
+if len(df_f) > 0 else "N/A"
+
+st.markdown(f"""
+<div style="display:grid;
+     grid-template-columns:repeat(4,1fr);
+     gap:0;background:#080808;
+     border:1px solid #141414;
+     border-radius:4px;
+     margin-bottom:1.5rem;">
+  <div style="padding:0.8rem 1.2rem;
+       border-right:1px solid #141414;">
+    <div style="font-family:'DM Mono',monospace;
+         font-size:0.5rem;letter-spacing:0.16em;
+         text-transform:uppercase;color:#2A2A2A;
+         margin-bottom:0.3rem;">Highest Rated</div>
+    <div style="font-family:'Bebas Neue',sans-serif;
+         font-size:0.95rem;letter-spacing:0.06em;
+         color:#888;">
+         {top_show['Title'] if top_show is not None 
+          else 'N/A'} 
+         ({top_show['Rating'] if top_show is not None 
+           else ''})
+    </div>
+  </div>
+  <div style="padding:0.8rem 1.2rem;
+       border-right:1px solid #141414;">
+    <div style="font-family:'DM Mono',monospace;
+         font-size:0.5rem;letter-spacing:0.16em;
+         text-transform:uppercase;color:#2A2A2A;
+         margin-bottom:0.3rem;">Most Popular</div>
+    <div style="font-family:'Bebas Neue',sans-serif;
+         font-size:0.95rem;letter-spacing:0.06em;
+         color:#888;">
+         {top_voted['Title'] if top_voted is not None 
+          else 'N/A'}
+         ({top_voted['Votes']/1e6:.1f}M)
+    </div>
+  </div>
+  <div style="padding:0.8rem 1.2rem;
+       border-right:1px solid #141414;">
+    <div style="font-family:'DM Mono',monospace;
+         font-size:0.5rem;letter-spacing:0.16em;
+         text-transform:uppercase;color:#2A2A2A;
+         margin-bottom:0.3rem;">Best Decade</div>
+    <div style="font-family:'Bebas Neue',sans-serif;
+         font-size:0.95rem;letter-spacing:0.06em;
+         color:#888;">{best_decade}</div>
+  </div>
+  <div style="padding:0.8rem 1.2rem;">
+    <div style="font-family:'DM Mono',monospace;
+         font-size:0.5rem;letter-spacing:0.16em;
+         text-transform:uppercase;color:#2A2A2A;
+         margin-bottom:0.3rem;">Common Age</div>
+    <div style="font-family:'Bebas Neue',sans-serif;
+         font-size:0.95rem;letter-spacing:0.06em;
+         color:#888;">{common_age}</div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ── TABS ──
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "Overview", "Trends",
+    "Deep Dive", "AI Insights", "Search"
+])
+
+# TAB 1 — OVERVIEW
+with tab1:
+    c1, c2 = st.columns(2)
+    with c1:
+        st.plotly_chart(create_top_rated_chart(df_f), use_container_width=True)
+    with c2:
+        st.plotly_chart(create_rating_distribution(df_f), use_container_width=True)
+    
+    c3, c4 = st.columns(2)
+    with c3:
+        st.plotly_chart(create_type_comparison(df_f), use_container_width=True)
+    with c4:
+        st.plotly_chart(create_age_distribution(df_f), use_container_width=True)
+
+# TAB 2 — TRENDS
+with tab2:
+    c1, c2 = st.columns(2)
+    with c1:
+        st.plotly_chart(create_shows_per_decade(df_f), use_container_width=True)
+    with c2:
+        st.plotly_chart(create_avg_rating_decade(df_f), use_container_width=True)
+    
+    st.plotly_chart(create_rating_tier(df_f), use_container_width=True)
+
+# TAB 3 — DEEP DIVE
+with tab3:
+    st.plotly_chart(create_rating_vs_votes(df_f), use_container_width=True)
+    
+    c1, c2 = st.columns(2)
+    with c1:
+        st.plotly_chart(create_episodes_vs_rating(df_f), use_container_width=True)
+    with c2:
+        st.plotly_chart(create_top_voted_chart(df_f), use_container_width=True)
+    
+    st.markdown("**Top 20 Shows**")
+    top20 = df_f.nlargest(20, 'Rating')[['Title','Rating','Votes','Episodes','Type','Decade','Age']]
+    st.dataframe(top20, use_container_width=True)
+
+# TAB 4 — AI INSIGHTS
+with tab4:
+    st.markdown("""
+    <div style="font-family:'DM Mono',monospace;
+         font-size:0.6rem;letter-spacing:0.14em;
+         text-transform:uppercase;color:#333;
+         margin-bottom:1rem;">
+         AI Analysis Engine · OpenRouter API
+    </div>
+    """, unsafe_allow_html=True)
+    
+    api_key = st.text_input(
+        "Enter OpenRouter API Key",
+        type="password",
+        placeholder="sk-or-v1-..."
+    )
+    
+    generate_btn = st.button(
+        "Generate AI Insights",
+        key="ai_btn"
+    )
+    
+    if generate_btn:
+        if not api_key:
+            st.error("Please enter your OpenRouter API key first.")
+        else:
+            with st.spinner("Generating insights..."):
+                try:
+                    insights = generate_insights(df_f, api_key)
+                    st.session_state['insights'] = insights
+                except Exception as e:
+                    st.error(f"Error: {str(e)}")
+    
+    if 'insights' in st.session_state and st.session_state['insights']:
+        items = [
+            i.strip().lstrip("•-▸0123456789. ")
+            for i in st.session_state['insights'].split("\n")
+            if i.strip()
+        ]
+        for i, item in enumerate(items[:5]):
+            st.markdown(f"""
+            <div style="padding:0.8rem;
+                 margin-bottom:0.5rem;
+                 background:#0A0A0A;
+                 border:1px solid #1A1A1A;
+                 border-left:2px solid #FFF;
+                 border-radius:4px;
+                 font-family:'DM Sans',sans-serif;
+                 font-size:0.82rem;
+                 color:#888;
+                 line-height:1.5;">
+                <span style="font-family:'Bebas Neue',
+                     sans-serif;font-size:1rem;
+                     color:#333;margin-right:0.8rem;">
+                     {str(i+1).zfill(2)}
+                </span>
+                {item}
+            </div>
+            """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    st.markdown("**Hidden Gems** — Rating ≥ 9.0, Votes < 200K")
+    gems = df_f[
+        (df_f['Rating'] >= 9.0) &
+        (df_f['Votes'] < 200000)
+    ][['Title','Rating','Votes','Type','Decade']]
+    
+    if len(gems) > 0:
+        st.dataframe(gems, use_container_width=True)
+    else:
+        st.info("No hidden gems in current filter.")
+
+# TAB 5 — SEARCH & RECOMMENDATIONS
+with tab5:
+    st.markdown("### Search Shows")
+    query = st.text_input(
+        "Search by title",
+        placeholder="e.g. Breaking Bad, Game of Thrones"
+    )
+    if query and len(query) > 0:
+        results = df_f[
+            df_f['Title'].str.contains(
+                query, case=False, na=False
+            )
+        ].sort_values('Rating', ascending=False)
+        
+        st.write(f"Found {len(results)} results")
+        
+        if len(results) == 0:
+            st.warning("No shows found. Try different keywords.")
+        else:
+            st.dataframe(
+                results[['Title','Rating','Votes',
+                         'Episodes','Type','Decade']],
+                use_container_width=True
+            )
+    
+    st.markdown("---")
+    st.markdown("### Similar Shows Recommender")
+    
+    cosine_sim, df_rec = build_recommendation_model(df)
+    
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        selected_show = st.selectbox(
+            "Select a show to get recommendations:",
+            options=sorted(df['Title'].tolist())
+        )
+    with col2:
+        num_recs = st.selectbox(
+            "Number of recommendations:",
+            options=[3, 5, 10],
+            index=1
+        )
+    
+    if selected_show:
+        recommendations = get_recommendations(
+            selected_show, df, cosine_sim, df_rec, n=num_recs
+        )
+        
+        st.markdown(f"**Shows similar to:**")
+        st.markdown(f"##### {selected_show}")
+        
+        if len(recommendations) > 0:
+            st.dataframe(recommendations, use_container_width=True)
+        else:
+            st.info("No recommendations available.")
