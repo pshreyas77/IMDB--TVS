@@ -1,4 +1,4 @@
-# IMDB Top 250 TV Shows - Visualizations
+# IMDB Top 250 TV Shows — Cinematic Visualization Engine
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -7,134 +7,198 @@ def load_data():
     try:
         return pd.read_csv('IMDB_cleaned.csv', encoding='latin-1')
     except FileNotFoundError:
-        return pd.read_csv('/home/sunny77/IMDB_cleaned.csv')
+        return pd.read_csv('data/IMDB_cleaned.csv', encoding='latin-1')
 
-# Black & White Plotly Theme
-BW_CHART = dict(
-    paper_bgcolor="#111111",
-    plot_bgcolor="#111111",
-    font=dict(family="DM Mono, monospace", color="#555555", size=10),
+# ── CINEMATIC THEME ──
+THEME = dict(
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
+    font=dict(family="DM Mono, monospace", color="#777", size=10),
+    title=dict(font=dict(family="Bebas Neue, sans-serif", size=18, color="#AAA"),
+               x=0, xanchor="left", y=0.98),
     xaxis=dict(
-        gridcolor="#1A1A1A", linecolor="#1A1A1A",
-        tickfont=dict(color="#444444", size=9),
+        gridcolor="rgba(255,255,255,0.03)", linecolor="#1A1A1A",
+        tickfont=dict(color="#555", size=9),
         showgrid=True, zeroline=False
     ),
     yaxis=dict(
-        gridcolor="#1A1A1A", linecolor="#1A1A1A",
-        tickfont=dict(color="#444444", size=9),
+        gridcolor="rgba(255,255,255,0.03)", linecolor="#1A1A1A",
+        tickfont=dict(color="#555", size=9),
         showgrid=True, zeroline=False
     ),
     legend=dict(
         bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#555555", size=9)
+        font=dict(color="#888", size=9)
     ),
-    margin=dict(l=30, r=15, t=35, b=50),
-    colorway=["#FFFFFF","#888888","#555555","#333333","#CCCCCC"]
+    margin=dict(l=30, r=15, t=50, b=50),
+    hoverlabel=dict(bgcolor="#111", font_size=12, font_color="#FFF",
+                    bordercolor="#E50914"),
 )
 
-# Chart 1 — Top 10 Shows by Rating (Horizontal Bar)
+# Color palette
+RED = "#E50914"
+RED_DARK = "#8B0000"
+WHITE = "#E0E0E0"
+GRAY = "#666666"
+DARK = "#333333"
+
+# ── CHART 1: Top 10 by Rating ──
 def create_top_rated_chart(df):
-    top10_rating = df.nlargest(10, 'Rating').sort_values('Rating')
-    fig = px.bar(top10_rating, y='Title', x='Rating', orientation='h',
-                 title="Top 10 Shows by Rating", color='Rating',
-                 color_continuous_scale=['#444444', '#FFFFFF'])
-    fig.update_layout(**BW_CHART, height=350, coloraxis_showscale=False)
-    fig.update_xaxes(range=[8.0, 9.6])
+    top10 = df.nlargest(10, 'Rating').sort_values('Rating')
+    fig = go.Figure(go.Bar(
+        y=top10['Title'], x=top10['Rating'], orientation='h',
+        marker=dict(
+            color=top10['Rating'],
+            colorscale=[[0, '#1a0000'], [0.5, '#8B0000'], [1, RED]],
+            line=dict(width=0),
+        ),
+        text=top10['Rating'].apply(lambda x: f"  {x}"),
+        textposition='outside', textfont=dict(color='#AAA', size=11),
+        hovertemplate="<b>%{y}</b><br>Rating: %{x}<extra></extra>"
+    ))
+    fig.update_layout(**THEME, height=380, title_text="TOP 10 BY RATING")
+    fig.update_xaxes(range=[8.0, 9.7])
     return fig
 
-# Chart 2 — Top 10 Shows by Votes (Horizontal Bar)
+# ── CHART 2: Top 10 by Votes ──
 def create_top_voted_chart(df):
-    top10_votes = df.nlargest(10, 'Votes').sort_values('Votes')
-    fig = px.bar(top10_votes, y='Title', x='Votes', orientation='h',
-                 title="Top 10 Shows by Votes", color='Votes',
-                 color_continuous_scale=['#444444', '#FFFFFF'])
-    fig.update_layout(**BW_CHART, height=350, coloraxis_showscale=False)
-    fig.update_xaxes(tickformat=',')
+    top10 = df.nlargest(10, 'Votes').sort_values('Votes')
+    fig = go.Figure(go.Bar(
+        y=top10['Title'], x=top10['Votes'], orientation='h',
+        marker=dict(
+            color=top10['Votes'],
+            colorscale=[[0, '#111'], [0.5, '#555'], [1, WHITE]],
+            line=dict(width=0),
+        ),
+        text=top10['Votes'].apply(lambda x: f"  {x/1e6:.1f}M"),
+        textposition='outside', textfont=dict(color='#AAA', size=11),
+        hovertemplate="<b>%{y}</b><br>Votes: %{x:,}<extra></extra>"
+    ))
+    fig.update_layout(**THEME, height=380, title_text="TOP 10 BY POPULARITY")
     return fig
 
-# Chart 3 — Rating Distribution (Histogram)
+# ── CHART 3: Rating Distribution ──
 def create_rating_distribution(df):
-    fig = px.histogram(df, x='Rating', nbins=20, title="Rating Distribution",
-                       color_discrete_sequence=['#FFFFFF'])
-    fig.update_layout(**BW_CHART, height=300, bargap=0.1)
+    fig = px.histogram(df, x='Rating', nbins=20,
+                       color_discrete_sequence=[RED])
+    fig.update_traces(marker_line_color='#000', marker_line_width=1,
+                      opacity=0.85,
+                      hovertemplate="Rating: %{x}<br>Count: %{y}<extra></extra>")
+    fig.update_layout(**THEME, height=320, bargap=0.08,
+                      title_text="RATING DISTRIBUTION")
     return fig
 
-# Chart 4 — Shows per Decade (Bar chart)
+# ── CHART 4: Shows per Decade ──
 def create_shows_per_decade(df):
-    decade_order = ['1990s', '2000s', '2010s', '2020s', 'Unknown']
+    decade_order = ['1970s', '1980s', '1990s', '2000s', '2010s', '2020s', 'Unknown']
     decade_counts = df['Decade'].value_counts().reindex(decade_order).fillna(0)
-    fig = px.bar(x=decade_counts.index, y=decade_counts.values, title="Shows per Decade",
-                 labels={'x': 'Decade', 'y': 'Count'}, color_discrete_sequence=['#FFFFFF'])
-    fig.update_traces(texttemplate='%{y}', textposition='outside')
-    fig.update_layout(**BW_CHART, height=300)
+    colors = [RED if d != 'Unknown' else DARK for d in decade_counts.index]
+    fig = go.Figure(go.Bar(
+        x=decade_counts.index, y=decade_counts.values,
+        marker=dict(color=colors, line=dict(width=0)),
+        text=decade_counts.values.astype(int),
+        textposition='outside', textfont=dict(color='#AAA', size=11),
+        hovertemplate="Decade: %{x}<br>Shows: %{y}<extra></extra>"
+    ))
+    fig.update_layout(**THEME, height=320, title_text="SHOWS PER DECADE")
     return fig
 
-# Chart 5 — Rating vs Votes (Scatter plot)
+# ── CHART 5: Rating vs Votes (Scatter) ──
 def create_rating_vs_votes(df):
     fig = px.scatter(df, x='Votes', y='Rating', size='Episodes', color='Type',
-                     title="Rating vs Votes", hover_name='Title',
-                     color_discrete_map={'TV Series': '#FFFFFF', 'TV Mini Series': '#888888'})
-    fig.update_layout(**BW_CHART, height=400)
+                     hover_name='Title',
+                     color_discrete_map={'TV Series': RED, 'TV Mini Series': WHITE})
+    fig.update_traces(marker=dict(line=dict(width=0.5, color='#000'), opacity=0.8),
+                      hovertemplate="<b>%{hovertext}</b><br>Rating: %{y}<br>Votes: %{x:,}<extra></extra>")
+    fig.update_layout(**THEME, height=420, title_text="RATING VS POPULARITY")
     return fig
 
-# Chart 6 — Type Comparison (Donut chart)
+# ── CHART 6: Type Comparison (Donut) ──
 def create_type_comparison(df):
     type_counts = df['Type'].value_counts()
-    fig = go.Figure(data=[go.Pie(labels=type_counts.index, values=type_counts.values,
-                                  hole=0.6, marker=dict(colors=['#FFFFFF', '#555555']),
-                                  textposition='outside')])
-    fig.update_layout(**BW_CHART, height=300, showlegend=True, annotations=[])
+    fig = go.Figure(data=[go.Pie(
+        labels=type_counts.index, values=type_counts.values,
+        hole=0.65,
+        marker=dict(colors=[RED, DARK], line=dict(color='#000', width=2)),
+        textposition='outside',
+        textfont=dict(color='#AAA', size=11),
+        hovertemplate="<b>%{label}</b><br>Count: %{value}<br>%{percent}<extra></extra>"
+    )])
+    fig.update_layout(**THEME, height=320, showlegend=True,
+                      title_text="SERIES TYPE SPLIT",
+                      annotations=[dict(text=f"{len(df)}", x=0.5, y=0.5,
+                                        font=dict(size=28, color=WHITE,
+                                                  family="Bebas Neue"),
+                                        showarrow=False)])
     return fig
 
-# Chart 7 — Age Rating Distribution (Bar)
+# ── CHART 7: Age Rating Distribution ──
 def create_age_distribution(df):
     age_counts = df['Age'].value_counts().sort_values(ascending=False)
-    fig = px.bar(x=age_counts.index, y=age_counts.values, title="Age Rating Distribution",
-                 labels={'x': 'Age Rating', 'y': 'Count'}, color_discrete_sequence=['#FFFFFF'])
-    fig.update_layout(**BW_CHART, height=300)
+    colors = [RED if i == 0 else f"rgba(229,9,20,{max(0.2, 1 - i*0.12):.2f})"
+              for i in range(len(age_counts))]
+    fig = go.Figure(go.Bar(
+        x=age_counts.index, y=age_counts.values,
+        marker=dict(color=colors, line=dict(width=0)),
+        text=age_counts.values,
+        textposition='outside', textfont=dict(color='#AAA', size=10),
+        hovertemplate="Age Rating: %{x}<br>Shows: %{y}<extra></extra>"
+    ))
+    fig.update_layout(**THEME, height=320, title_text="AGE RATING BREAKDOWN")
     return fig
 
-# Chart 8 — Avg Rating by Decade (Line chart)
+# ── CHART 8: Avg Rating by Decade (Line) ──
 def create_avg_rating_decade(df):
     decade_order = ['1990s', '2000s', '2010s', '2020s']
     rating_by_decade = df.groupby('Decade')['Rating'].mean().reindex(decade_order)
-    fig = px.line(x=rating_by_decade.index, y=rating_by_decade.values,
-                  title="Avg Rating by Decade", markers=True,
-                  labels={'x': 'Decade', 'y': 'Avg Rating'}, color_discrete_sequence=['#FFFFFF'])
-    fig.update_traces(line_width=3, marker_size=8)
-    fig.update_layout(**BW_CHART, height=300)
-    fig.update_yaxes(range=[8.5, 9.1])
+    fig = go.Figure(go.Scatter(
+        x=rating_by_decade.index, y=rating_by_decade.values,
+        mode='lines+markers+text',
+        line=dict(color=RED, width=3),
+        marker=dict(size=10, color=RED, line=dict(color='#000', width=2)),
+        text=[f"{v:.2f}" for v in rating_by_decade.values],
+        textposition='top center', textfont=dict(color='#AAA', size=11),
+        hovertemplate="Decade: %{x}<br>Avg Rating: %{y:.2f}<extra></extra>"
+    ))
+    fig.update_layout(**THEME, height=320, title_text="AVG RATING BY DECADE")
+    fig.update_yaxes(range=[8.4, 9.2])
     return fig
 
-# Chart 9 — Rating Tier Breakdown (Bar)
+# ── CHART 9: Rating Tier Breakdown ──
 def create_rating_tier(df):
     tier_order = ['Elite', 'Excellent', 'Great', 'Good']
     tier_counts = df['Rating_Tier'].value_counts().reindex(tier_order).fillna(0)
-    fig = px.bar(x=tier_counts.index, y=tier_counts.values, title="Rating Tier Breakdown",
-                 labels={'x': 'Rating Tier', 'y': 'Count'}, color_discrete_sequence=['#FFFFFF'])
-    fig.update_layout(**BW_CHART, height=300)
+    tier_colors = {'Elite': RED, 'Excellent': WHITE, 'Great': GRAY, 'Good': DARK}
+    colors = [tier_colors.get(t, GRAY) for t in tier_order]
+    fig = go.Figure(go.Bar(
+        x=tier_counts.index, y=tier_counts.values,
+        marker=dict(color=colors, line=dict(width=0)),
+        text=tier_counts.values.astype(int),
+        textposition='outside', textfont=dict(color='#AAA', size=11),
+        hovertemplate="Tier: %{x}<br>Shows: %{y}<extra></extra>"
+    ))
+    fig.update_layout(**THEME, height=320, title_text="RATING TIER BREAKDOWN")
     return fig
 
-# Chart 10 — Episodes vs Rating (Scatter)
+# ── CHART 10: Episodes vs Rating (Scatter) ──
 def create_episodes_vs_rating(df):
-    fig = px.scatter(df, x='Episodes', y='Rating', title="Episodes vs Rating",
+    fig = px.scatter(df, x='Episodes', y='Rating',
                      hover_name='Title', hover_data={'Start_Year': True},
-                     color_discrete_sequence=['#FFFFFF'])
-    fig.update_layout(**BW_CHART, height=400)
+                     color_discrete_sequence=[WHITE])
+    fig.update_traces(marker=dict(size=7, opacity=0.7,
+                                  line=dict(width=0.5, color=RED)),
+                      hovertemplate="<b>%{hovertext}</b><br>Episodes: %{x}<br>Rating: %{y}<extra></extra>")
+    fig.update_layout(**THEME, height=420, title_text="EPISODES VS RATING")
     return fig
 
-# Test function
+# ── TEST ──
 if __name__ == "__main__":
     print("Testing charts...")
     df = load_data()
-    create_top_rated_chart(df).show()
-    create_top_voted_chart(df).show()
-    create_rating_distribution(df).show()
-    create_shows_per_decade(df).show()
-    create_rating_vs_votes(df).show()
-    create_type_comparison(df).show()
-    create_age_distribution(df).show()
-    create_avg_rating_decade(df).show()
-    create_rating_tier(df).show()
-    create_episodes_vs_rating(df).show()
+    for fn in [create_top_rated_chart, create_top_voted_chart,
+               create_rating_distribution, create_shows_per_decade,
+               create_rating_vs_votes, create_type_comparison,
+               create_age_distribution, create_avg_rating_decade,
+               create_rating_tier, create_episodes_vs_rating]:
+        fn(df)
     print("All 10 charts generated successfully!")

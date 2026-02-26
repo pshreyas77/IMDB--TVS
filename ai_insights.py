@@ -1,7 +1,7 @@
 import pandas as pd
 from openai import OpenAI
 
-def generate_insights(df: pd.DataFrame, api_key: str = None) -> str:
+def generate_insights(df: pd.DataFrame, api_key: str | None = None) -> str:
     # Calculate summary stats
     avg_rating = df['Rating'].mean()
     top_show = df.loc[df['Rating'].idxmax(), 'Title']
@@ -61,7 +61,7 @@ Be data-specific. Each insight max 2 sentences."""
 
 # Test
 if __name__ == "__main__":
-    df = pd.read_csv('IMDB_cleaned.csv')
+    df = pd.read_csv('IMDB_cleaned.csv', encoding='latin-1')
     print("Generating AI insights...")
     insights = generate_insights(df)
     print("\n=== AI INSIGHTS ===")
