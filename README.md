@@ -64,6 +64,9 @@ imdb-tv-analytics/
 └── 📝 Documentation
     └── README.md              # Project documentation
 ```
+<img width="1891" height="895" alt="image" src="https://github.com/user-attachments/assets/eaab8e84-aa26-4c1c-83cf-f740d6eb7872" />
+<img width="1600" height="832" alt="image" src="https://github.com/user-attachments/assets/6803d0f6-69dc-49d7-a750-3dc2142ff975" />
+<img width="1603" height="893" alt="image" src="https://github.com/user-attachments/assets/914d45b1-dae8-4620-96a1-8eed2dafbe38" />
 
 ---
 
